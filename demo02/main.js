@@ -57,7 +57,6 @@ var app = http.createServer(function(request,response){
           }
           list=list+'</ol>';
           fs.readFile(`data/${queryData.id}`,'utf-8',function(err,descrition)){
-
             var title =queryData.id;
             var template=`
               <!doctype html>
@@ -79,13 +78,9 @@ var app = http.createServer(function(request,response){
             }
           });
       }
-
     }else{
       response.writeHead(404);
       response.end('not found');
     }
-
-
-
 });
 app.listen(3000);
