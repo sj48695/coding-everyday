@@ -7,6 +7,7 @@ var app = http.createServer(function(request,response){
     var queryData=url.parse(_url,true).query;
 //    var title=queryData.id;
     var pathname=url.parse(_url, true).pathname;
+    
     if(pathname==='/'){
      /*response.end(fs.readFileSync(__dirname + _url));*/
       if(queryData.id===undefined){
@@ -75,7 +76,7 @@ var app = http.createServer(function(request,response){
               response.writeHead(200);
               response.end(template);
             }
-          });dkdkkdkdk
+          });
       }
     }else{
       response.writeHead(404);
