@@ -20,3 +20,7 @@ port포트번호 - 여러개의 서버중 접속한 포트의 연결번호	app.listen(3000);
 path - 디렉터리
 query string - 데이터 전달	'id=HTML&page=12'
 	(post - /get - )
+
+
+3.synchronous/asynchronous
+동기(직렬, 순차적으로)와 비동기(병렬)
