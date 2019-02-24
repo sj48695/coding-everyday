@@ -3,7 +3,7 @@ var fs = require('fs');
 var url=require('url');
 var qs=require('querystring');
 
-function templateHTML(title,list,body){//재사용할 수 있는
+function templateHTML(title,list,body,control){//재사용할 수 있는
   return `<!doctype html>
             <html>
               <head>
@@ -13,7 +13,7 @@ function templateHTML(title,list,body){//재사용할 수 있는
               <body>
                 <h1><a href="/">WEB</a></h1>
                 ${list}
-                <a href="/create">create</a>
+                ${control}
               ${body}
               </body>
             </html>
@@ -37,11 +37,12 @@ var app = http.createServer(function(request,response){//요청, 응답
   if(pathname==='/'){
     /*response.end(fs.readFileSync(__dirname + _url));*/
     if(queryData.id===undefined){
-      fs.readdir('./data', (err, filelist) => {
+      fs.readdir('./data', (err, filelist) => {//home
         var title ='Welcome';
         var descrition='Hello,Node.js';
         var list= templateList(filelist);
-        var template=templateHTML(title,list, `<h2>${title}</h2><p>${descrition}</p>`);
+        var template=templateHTML(title,list, `<h2>${title}</h2><p>${descrition}</p>`
+          ,`<a href="/create">create</a>`);
         response.writeHead(200);
         response.end(template);
       });
@@ -51,7 +52,8 @@ var app = http.createServer(function(request,response){//요청, 응답
         var list= templateList(filelist);
         fs.readFile(`data/${queryData.id}`,'utf-8',function(err,descrition){
           var title =queryData.id;
-          var template=templateHTML(title,list,`<h2>${title}</h2><p>${descrition}</p>`);
+          var template=templateHTML(title,list,`<h2>${title}</h2><p>${descrition}</p>`
+            ,`<a href="/create">create</a><a href="/update?id=${title}">update</a>`);
           response.writeHead(200);
           response.end(template);
         });
@@ -70,7 +72,8 @@ var app = http.createServer(function(request,response){//요청, 응답
           <p>
             <input type="submit">
           </p>
-        </form>`);
+        </form>`
+        ,``);
       response.writeHead(200);
       response.end(template);
     });
@@ -78,7 +81,6 @@ var app = http.createServer(function(request,response){//요청, 응답
     var body='';
     request.on('data',function(data){//서버쪽에서 수신할 때 마다 콜백함수를 실행
       body=body+data;
-      console.log(data);
     });
     request.on('end',function(){
       var post=qs.parse(body);//객체화
