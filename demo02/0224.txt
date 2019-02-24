@@ -1,0 +1,51 @@
+/*
+function a(){
+  console.log('A');
+}
+*/
+var a = function(){
+  console.log('A');
+}
+ 
+ 
+function slowfunc(callback){
+  callback();
+}
+ 
+slowfunc(a);
+
+
+
+
+package manager - 프로그램, 소프트웨어를 관리 생성, 삭제, 설치, 업데이트를 관리해주는 것을 말한다.
+npm 
+pm2 - 프로세스를 감시하고 있다가 꺼지면 다시 켜주는 것?, 파일이 수정되면 자동으로 껐다 켜준다.
+	작업관리자같은느낌??
+
+<pm2 사용법>
+pm2 start main.js --watch (watch라는 옵션을 줘야한다.)
+pm2 monit (node.js를 강제로 꺼도 다시 살아나는 것을 볼 수 있다.)
+pm2 list --> pm2 stop main
+pm2 log
+
+
+0224
+<get/post>
+get - 보안에 취약, ?title=d&description=d
+post - 숨겨서 보냄, 보안 undefined로 보내짐
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
