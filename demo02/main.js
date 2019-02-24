@@ -14,7 +14,7 @@ function templateHTML(title,list,body,control){//재사용할 수 있는
                 <h1><a href="/">WEB</a></h1>
                 ${list}
                 ${control}
-              ${body}
+                ${body}
               </body>
             </html>
             `;
@@ -39,20 +39,19 @@ var app = http.createServer(function(request,response){//요청, 응답
     if(queryData.id===undefined){
       fs.readdir('./data', (err, filelist) => {//home
         var title ='Welcome';
-        var descrition='Hello,Node.js';
+        var description='Hello,Node.js';
         var list= templateList(filelist);
-        var template=templateHTML(title,list, `<h2>${title}</h2><p>${descrition}</p>`
+        var template=templateHTML(title,list, `<h2>${title}</h2><p>${description}</p>`
           ,`<a href="/create">create</a>`);
         response.writeHead(200);
         response.end(template);
       });
     }else{
-      fs.readdir('./data', (err, filelist) => {
-        var descrition='Hello,Node.js';
-        var list= templateList(filelist);
-        fs.readFile(`data/${queryData.id}`,'utf-8',function(err,descrition){
+      fs.readdir('./data', (err, filelist) => {//data들어가면
+        fs.readFile(`data/${queryData.id}`,'utf-8',function(err,description){
           var title =queryData.id;
-          var template=templateHTML(title,list,`<h2>${title}</h2><p>${descrition}</p>`
+          var list= templateList(filelist);
+          var template=templateHTML(title,list,`<h2>${title}</h2><p>${description}</p>`
             ,`<a href="/create">create</a><a href="/update?id=${title}">update</a>`);
           response.writeHead(200);
           response.end(template);
@@ -64,7 +63,7 @@ var app = http.createServer(function(request,response){//요청, 응답
       var title ='WEB - create';
       var list= templateList(filelist);
       var template=templateHTML(title,list, `
-        <form action="http://localhost:3000/create_process" method="post">
+        <form action="/create_process" method="post">
           <p><input type="text" name="title" placeholder="title"></p>
           <p>
             <textarea name="description" placeholder="description"></textarea>
@@ -91,6 +90,46 @@ var app = http.createServer(function(request,response){//요청, 응답
         //response.writeHead(200);//성공
         response.end('success');
       });
+    });
+  }else if(pathname==='/update'){
+     fs.readdir('./data', (err, filelist) => {
+      fs.readFile(`data/${queryData.id}`,'utf-8',function(err,description){
+        var title =queryData.id;
+        var list= templateList(filelist);
+        var template=templateHTML(title,list,
+          `<form action="/update_process" method="post">
+            <input type="hidden" name="id" value="${title}">
+            <p><input type="text" name="title" placeholder="title" value="${title}"></p>
+            <p>
+              <textarea name="description" placeholder="description">${description}</textarea>
+            </p>
+            <p>
+              <input type="submit">
+            </p>
+          </form>
+          `,`<a href="/create">create</a><a href="/update?id=${title}">update</a>`);
+        response.writeHead(200);
+        response.end(template);
+      });
+    });
+  }else if(pathname==='/update_process'){//변경완료
+   var body='';
+    request.on('data',function(data){//서버쪽에서 수신할 때 마다 콜백함수를 실행
+      body=body+data;
+    });
+    request.on('end',function(){
+      var post=qs.parse(body);//객체화
+      var id=post.id;
+      var title=post.title;
+      var description=post.description;
+      console.log(post);
+      fs.rename(`data/${id}`,`data/${title}`,function(err){
+       fs.writeFile(`data/${title}`,description,'utf8',function(err){
+        response.writeHead(302,{Location:`/?id=${title}`});//리다이렉션
+        //response.writeHead(200);//성공
+        response.end('success');
+      });
+     });
     });
   }else{
     response.writeHead(404);
