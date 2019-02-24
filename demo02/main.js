@@ -78,14 +78,15 @@ var app = http.createServer(function(request,response){//요청, 응답
     var body='';
     request.on('data',function(data){//서버쪽에서 수신할 때 마다 콜백함수를 실행
       body=body+data;
+      console.log(data);
     });
     request.on('end',function(){
       var post=qs.parse(body);//객체화
       var title=post.title;
       var description=post.description;
       fs.writeFile(`data/${title}`,description,'utf8',function(err){
-
-        response.writeHead(200);
+        response.writeHead(302,{Location:`/?id=${title}`});//리다이렉션
+        //response.writeHead(200);//성공
         response.end('success');
       });
     });
